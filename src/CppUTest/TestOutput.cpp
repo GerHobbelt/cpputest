@@ -44,7 +44,7 @@ TestOutput::WorkingEnvironment TestOutput::getWorkingEnvironment()
 
 
 TestOutput::TestOutput() :
-    dotCount_(0), verbose_(level_quiet), color_(false), progressIndication_(".")
+    dotCount_(0), verbose_(level_quiet), color_(false), progressIndication_("."), arguments_(NULL)
 {
 }
 
@@ -245,8 +245,34 @@ void TestOutput::printErrorInFileOnLineFormattedForWorkingEnvironment(SimpleStri
         printEclipseErrorInFileOnLine(file, lineNumber);
 }
 
+SimpleString TestOutput::convAbsToRelPath(SimpleString path)
+{
+
+	/** for later use save program path too */
+	SimpleString programPath = arguments_->getProgramName();
+	programPath.replace("\\","/");
+
+	SimpleString projectPath = arguments_->getProjectPath();
+	projectPath.replace("\\","/");
+
+	path.replace("\\","/");
+	if( path.contains(projectPath) && path.StrLen(projectPath.asCharString()) > 0)
+	{
+		SimpleString relPath;
+		const char *pszOrigin = path.asCharString();
+		char *pszTemp = (char*)path.StrStr(pszOrigin, projectPath.asCharString());
+		pszTemp += path.StrLen(projectPath.asCharString());
+
+		relPath = pszTemp;
+		path = relPath;
+	}
+	return path;
+}
+
 void TestOutput::printEclipseErrorInFileOnLine(SimpleString file, size_t lineNumber)
 {
+	file = TestOutput::convAbsToRelPath(file);
+
     print("\n");
     print(file.asCharString());
     print(":");
@@ -271,6 +297,10 @@ void TestOutput::printVeryVerbose(const char* str)
         printBuffer(str);
 }
 
+void TestOutput::setCommandLineArguments(CommandLineArguments *args)
+{
+	arguments_ = args;
+}
 
 void ConsoleTestOutput::printBuffer(const char* s)
 {

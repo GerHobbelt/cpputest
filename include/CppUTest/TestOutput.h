@@ -42,6 +42,7 @@
 class UtestShell;
 class TestFailure;
 class TestResult;
+class CommandLineArguments;
 
 class TestOutput
 {
@@ -73,12 +74,14 @@ public:
     virtual void printVeryVerbose(const char*);
 
     virtual void flush()=0;
+    virtual void setCommandLineArguments(CommandLineArguments *args);
 
     static void setWorkingEnvironment(WorkingEnvironment workEnvironment);
     static WorkingEnvironment getWorkingEnvironment();
 
 protected:
 
+    SimpleString convAbsToRelPath(SimpleString path);
     virtual void printEclipseErrorInFileOnLine(SimpleString file, size_t lineNumber);
     virtual void printVisualStudioErrorInFileOnLine(SimpleString file, size_t lineNumber);
 
@@ -96,6 +99,7 @@ protected:
     VerbosityLevel verbose_;
     bool color_;
     const char* progressIndication_;
+    CommandLineArguments *arguments_;
 
     static WorkingEnvironment workingEnvironment_;
 };
@@ -168,7 +172,6 @@ protected:
 private:
     StringBufferTestOutput(const StringBufferTestOutput&);
     StringBufferTestOutput& operator=(const StringBufferTestOutput&);
-
 };
 
 class CompositeTestOutput : public TestOutput

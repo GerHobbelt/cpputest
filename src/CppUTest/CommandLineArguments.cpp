@@ -51,6 +51,7 @@ CommandLineArguments::~CommandLineArguments()
 bool CommandLineArguments::parse(TestPlugin* plugin)
 {
     bool correctParameters = true;
+    programName_ = av_[0];
     for (int i = 1; i < ac_; i++) {
         SimpleString argument = av_[i];
 
@@ -80,6 +81,7 @@ bool CommandLineArguments::parse(TestPlugin* plugin)
         else if (argument.startsWith("TEST(")) addTestToRunBasedOnVerboseOutput(ac_, av_, i, "TEST(");
         else if (argument.startsWith("IGNORE_TEST(")) addTestToRunBasedOnVerboseOutput(ac_, av_, i, "IGNORE_TEST(");
         else if (argument.startsWith("-o")) correctParameters = setOutputType(ac_, av_, i);
+        else if (argument.startsWith("-pp")) setProjectPath(ac_, av_, i);
         else if (argument.startsWith("-p")) correctParameters = plugin->parseAllArguments(ac_, av_, i);
         else if (argument.startsWith("-k")) setPackageName(ac_, av_, i);
         else correctParameters = false;
@@ -383,5 +385,23 @@ bool CommandLineArguments::isTeamCityOutput() const
 const SimpleString& CommandLineArguments::getPackageName() const
 {
     return packageName_;
+}
+
+const SimpleString& CommandLineArguments::getProgramName() const
+{
+    return programName_;
+}
+
+void CommandLineArguments::setProjectPath(int ac, const char *const *av, int& i)
+{
+    SimpleString projectPath = getParameterField(ac, av, i, "-pp");
+    if (projectPath.size() == 0) return;
+
+    projectPath_ = projectPath;
+}
+
+const SimpleString& CommandLineArguments::getProjectPath() const
+{
+    return projectPath_;
 }
 
