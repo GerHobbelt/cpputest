@@ -88,6 +88,7 @@ generated/
 *.deps/
 *.dirstamp
 *.trs
+GitExtensions/
 
 #IAR automatically generated files
 *.dep
