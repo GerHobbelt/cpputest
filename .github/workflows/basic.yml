@@ -24,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@main
       - name: CodeQL Initialization
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: cpp
           queries: +security-and-quality
@@ -34,7 +34,7 @@ jobs:
           cmake -DCMAKE_CXX_STANDARD=17 ..
           make -j2
       - name: CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
 
   autotools:
     strategy:
@@ -350,7 +350,6 @@ jobs:
     name: Make OpenWatcom DOS
     runs-on: ubuntu-latest
     env:
-      WATCOM: "./watcom"
       TERM: linux
     steps:
       - name: Checkout
@@ -359,12 +358,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y dosbox
-          git clone https://github.com/cpputest/watcom-compiler.git $WATCOM
-          echo "$WATCOM/binl" >> $GITHUB_PATH
-      - name: Build
-        run: make -f platforms/Dos/Makefile
-      - name: Test
-        run: make -f platforms/Dos/Makefile test
+      - name: Build & Test
+        run: ./scripts/dos_build_test.sh
 
   cmake_msys:
     name: CMake MSYS
@@ -426,20 +421,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Docker ${{ matrix.image }}
     steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-        env:
-          TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-        if: ${{ env.TOKEN != '' }}
       - name: Build
         uses: docker/build-push-action@v3
         with:
           file: docker/Dockerfile.${{ matrix.image }}
-          tags: cpputest/${{ matrix.image }}
+          tags: cpputest/${{ matrix.image }}:latest
+          push: false
+      - name: Test
+        run: |
+          docker run --rm cpputest/${{ matrix.image }}:latest
