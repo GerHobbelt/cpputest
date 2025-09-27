@@ -31,7 +31,7 @@
 
 TEST_GROUP(MockParameterTest)
 {
-  void teardown() _override
+  void teardown() CPPUTEST_OVERRIDE
   {
       mock().checkExpectations();
       mock().clear();
@@ -67,7 +67,7 @@ TEST(MockParameterTest, expectOneIntegerParameterAndValue)
 
 TEST(MockParameterTest, expectOneUnsignedLongLongIntegerParameterAndValue)
 {
-    unsigned long long value = 0xFFFFAAAAFFFFAAAA;
+    unsigned long long value = 0xFFFFAAAAFFFFAAAAULL;
     mock().expectOneCall("foo").withParameter("parameter", value);
     mock().actualCall("foo").withParameter("parameter", value);
 
@@ -76,7 +76,7 @@ TEST(MockParameterTest, expectOneUnsignedLongLongIntegerParameterAndValue)
 
 TEST(MockParameterTest, expectOneLongLongIntegerParameterAndValue)
 {
-    long long value = 0x7FFFAAAAFFFFAAAA;
+    long long value = 0x7FFFAAAAFFFFAAAAULL;
 
     mock().expectOneCall("foo").withParameter("parameter", value);
     mock().actualCall("foo").withParameter("parameter", value);

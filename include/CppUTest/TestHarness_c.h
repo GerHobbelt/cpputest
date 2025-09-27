@@ -115,7 +115,7 @@
   CHECK_EQUAL_C_POINTER_LOCATION(expected,actual,text,__FILE__,__LINE__)
 
 #define CHECK_EQUAL_C_MEMCMP(expected, actual, size) \
-  CHECK_EQUAL_C_MEMCMP_LOCATION(expected, actual, size, NULLPTR, __FILE__, __LINE__)
+  CHECK_EQUAL_C_MEMCMP_LOCATION(expected, actual, size, NULL, __FILE__, __LINE__)
 
 #define CHECK_EQUAL_C_MEMCMP_TEXT(expected, actual, size, text) \
   CHECK_EQUAL_C_MEMCMP_LOCATION(expected, actual, size, text, __FILE__, __LINE__)
@@ -170,12 +170,12 @@
     TEST_GROUP(group_name)
 
 #define TEST_GROUP_C_SETUP_WRAPPER(group_name) \
-    void setup() _override { \
+    void setup() CPPUTEST_OVERRIDE { \
        group_##group_name##_setup_wrapper_c(); \
     }
 
 #define TEST_GROUP_C_TEARDOWN_WRAPPER(group_name) \
-    void teardown() _override { \
+    void teardown() CPPUTEST_OVERRIDE { \
        group_##group_name##_teardown_wrapper_c(); \
     }
 
