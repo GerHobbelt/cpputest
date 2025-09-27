@@ -1,7 +1,7 @@
 # 2.6.3 is needed for ctest support
 # 3.1 is needed for target_sources
 # 3.8 is needed for try_compile improvements (CMP0067)
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.8...3.31)
 
 project(CppUTest
   VERSION 4.0
@@ -102,6 +102,7 @@ include(GNUInstallDirs)
 include(CheckTypeSize)
 include(CheckStructHasMember)
 set(CMAKE_REQUIRED_FLAGS ${CMAKE_CXX_FLAGS})
+check_cxx_symbol_exists(kill "signal.h" CPPUTEST_HAVE_KILL)
 check_cxx_symbol_exists(fork "unistd.h" CPPUTEST_HAVE_FORK)
 check_cxx_symbol_exists(waitpid "sys/wait.h" CPPUTEST_HAVE_WAITPID)
 check_cxx_symbol_exists(gettimeofday "sys/time.h" CPPUTEST_HAVE_GETTIMEOFDAY)
