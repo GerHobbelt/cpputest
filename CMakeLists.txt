@@ -43,8 +43,6 @@ cmake_dependent_option(CPPUTEST_BUILD_TESTING "Compile and make tests for CppUTe
   ${PROJECT_IS_TOP_LEVEL} "BUILD_TESTING" OFF)
 cmake_dependent_option(CPPUTEST_SPLIT_TESTS "Split tests into small executables"
   OFF "CPPUTEST_BUILD_TESTING" OFF)
-cmake_dependent_option(CPPUTEST_TEST_DISCOVERY "Build time test discover"
-  ON "CPPUTEST_BUILD_TESTING;CMAKE_CROSSCOMPILING_EMULATOR OR NOT CMAKE_CROSSCOMPILING" OFF)
 cmake_dependent_option(CPPUTEST_TEST_GTEST "Test GoogleTest integration"
   OFF "CPPUTEST_BUILD_TESTING" OFF)
 cmake_dependent_option(CPPUTEST_EXAMPLES "Compile and make examples?"
@@ -91,6 +89,17 @@ cmake_dependent_option(CPPUTEST_USE_SECURE_STDLIB "Use MSVC safe functions"
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 if(NOT PROJECT_IS_TOP_LEVEL)
   set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
+endif()
+
+
+if(
+  (NOT CPPUTEST_MEM_LEAK_DETECTION_DISABLED)
+  AND (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  AND (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "15.1")
+)
+  # Leak detection macros are not sane.
+  message(NOTICE "Disabling -fassume-sane-operators-new-delete which breaks leak detection")
+  add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-fno-assume-sane-operators-new-delete>)
 endif()
 
 if(PROJECT_IS_TOP_LEVEL)
