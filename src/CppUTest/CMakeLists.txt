@@ -56,12 +56,7 @@ if(CPPUTEST_PLATFORM)
     )
 endif()
 
-if(CPPUTEST_PLATFORM STREQUAL "c2000")
-    target_include_directories(CppUTest
-        PUBLIC
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/../../include/Platforms/c2000>
-    )
-elseif(CPPUTEST_PLATFORM STREQUAL "Iar")
+if(CPPUTEST_PLATFORM STREQUAL "Iar")
     target_compile_options(CppUTest
         PRIVATE
             --dlib_config full
@@ -81,8 +76,18 @@ target_include_directories(CppUTest
 )
 
 target_compile_definitions(CppUTest
+    PUBLIC
+        CPPUTEST_USE_MEM_LEAK_DETECTION=$<NOT:$<BOOL:${CPPUTEST_MEM_LEAK_DETECTION_DISABLED}>>
+        CPPUTEST_USE_LONG_LONG=$<BOOL:${CPPUTEST_USE_LONG_LONG}>
+        CPPUTEST_USE_STD_C_LIB=$<NOT:$<BOOL:${CPPUTEST_STD_C_LIB_DISABLED}>>
+        CPPUTEST_USE_STD_CPP_LIB=$<NOT:$<BOOL:${CPPUTEST_STD_CPP_LIB_DISABLED}>>
+        $<$<BOOL:${CPPUTEST_HAVE_STRDUP}>:CPPUTEST_HAVE_STRDUP>
+        $<$<BOOL:${CPPUTEST_HAVE_FORK}>:CPPUTEST_HAVE_FORK>
+        $<$<BOOL:${CPPUTEST_HAVE_WAITPID}>:CPPUTEST_HAVE_WAITPID>
+        $<$<BOOL:${CPPUTEST_HAVE_KILL}>:CPPUTEST_HAVE_KILL>
+        $<$<BOOL:${CPPUTEST_HAVE_PTHREAD_MUTEX_LOCK}>:CPPUTEST_HAVE_PTHREAD_MUTEX_LOCK>
     PRIVATE
-        $<$<BOOL:${CPPUTEST_USE_SECURE_STDLIB}>:STDC_WANT_SECURE_LIB>
+        $<$<BOOL:${CPPUTEST_HAVE_GETTIMEOFDAY}>:CPPUTEST_HAVE_GETTIMEOFDAY>
         # Apply workaround for MinGW timespec redefinition (pthread.h / time.h).
         $<$<BOOL:${HAVE_STRUCT_TIMESPEC}>:_TIMESPEC_DEFINED>
 )
