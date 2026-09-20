@@ -1,6 +1,6 @@
 set(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}")
 set(LIB_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}")
-set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
+set(INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
 
 # Pkg-config file.
 set(prefix "${CMAKE_INSTALL_PREFIX}")
@@ -39,14 +39,14 @@ install(
     DESTINATION "${CPPUTEST_CONFIG_DEST}"
 )
 install(
-    FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Scripts/CppUTestBuildTimeDiscoverTests.cmake
+    FILES ${PROJECT_SOURCE_DIR}/cmake/Scripts/CppUTestBuildTimeDiscoverTests.cmake
     DESTINATION "${CPPUTEST_CONFIG_DEST}/Scripts"
 )
 install(
     FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/CppUTestBuildTimeDiscoverTests.cmake
-        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/CppUTest.cmake
-        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/_CppUTestDiscovery.cmake
+        ${PROJECT_SOURCE_DIR}/cmake/Modules/CppUTestBuildTimeDiscoverTests.cmake
+        ${PROJECT_SOURCE_DIR}/cmake/Modules/CppUTest.cmake
+        ${PROJECT_SOURCE_DIR}/cmake/Modules/_CppUTestDiscovery.cmake
     DESTINATION "${CPPUTEST_CONFIG_DEST}/Modules"
 )
 configure_package_config_file(CppUTestConfig.cmake.build.in
